@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+
+  tcp-proxy-pod-autoscaler:
+    build:
+      context: tcp-proxy-pod-autoscaler
+    ports:
+      - 8088:80

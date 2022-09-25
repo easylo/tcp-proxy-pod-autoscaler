@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcp-proxy-pod-autoscaler
+  namespace: webapp
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tcp-proxy-pod-autoscaler
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tcp-proxy-pod-autoscaler
+    spec:
+      serviceAccountName: tcp-proxy-pod-autoscaler-sa
+      containers:
+      - name: tcp-proxy-pod-autoscaler
+        image: tcp-proxy-pod-autoscaler
+        imagePullPolicy: Never
+        args:
+        - --namespace=webapp
+        - --local-port=9000
+        - --deployment=frontend
+        - --endpoint=frontend-svc
+        - --target-address=frontend-svc
+        - --target-port=80
+        - --ttl=300
+        - --check-interval=10
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 9000
