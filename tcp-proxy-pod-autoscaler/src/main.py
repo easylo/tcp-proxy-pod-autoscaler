@@ -1,18 +1,9 @@
-import time
-# from pprint import pprint
 import argparse
-# from kubernetes.client.rest import ApiException
-# import kubernetes.client
-# from kubernetes import client, config, watch
-# from kubernetes import client, config
 
 from logger_toolbox import _logger
 from proxy import Proxy
 from watcher import Watcher
 from scaler import Scaler
-# import threading
-
-# _scaler: Scaler
 
 
 def parse_args():

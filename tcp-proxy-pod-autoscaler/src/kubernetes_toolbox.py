@@ -1,4 +1,3 @@
-from operator import truediv
 from kubernetes import client, config, watch
 from kubernetes.client.rest import ApiException
 from logger_toolbox import _logger

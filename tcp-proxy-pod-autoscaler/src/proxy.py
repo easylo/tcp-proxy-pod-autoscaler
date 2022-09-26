@@ -1,6 +1,5 @@
 import socket
-import socks
-import threading
+# import socks
 import select
 import sys
 
