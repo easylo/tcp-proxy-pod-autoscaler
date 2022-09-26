@@ -27,6 +27,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          context: tcp-proxy-pod-autoscaler
+          context: "{{defaultContext}}:tcp-proxy-pod-autoscaler"
           tags: laurentrichard/tcp-proxy-pod-autoscaler:latest
 
