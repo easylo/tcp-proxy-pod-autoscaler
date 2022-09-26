@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-    - "tcp-proxy-pod-autoscaler"
+    - "tcp-proxy-pod-autoscaler/**"
   release:
     types: [published]
 jobs:
