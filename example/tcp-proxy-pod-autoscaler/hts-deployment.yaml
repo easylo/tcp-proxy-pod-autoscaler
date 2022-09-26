@@ -16,7 +16,7 @@ spec:
       serviceAccountName: tcp-proxy-pod-autoscaler-sa
       containers:
       - name: tcp-proxy-pod-autoscaler
-        image: tcp-proxy-pod-autoscaler
+        image: laurentrichard/tcp-proxy-pod-autoscaler:latest
         imagePullPolicy: Never
         args:
         - --namespace=webapp

@@ -1,6 +1,6 @@
 .PHONY: build_app
 build_app:
-	docker build tcp-proxy-pod-autoscaler -t tcp-proxy-pod-autoscaler
+	docker build tcp-proxy-pod-autoscaler -t laurentrichard/tcp-proxy-pod-autoscaler:latest
 
 .PHONY: k_apply
 k_apply:
