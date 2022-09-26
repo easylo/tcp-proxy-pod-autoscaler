@@ -18,6 +18,7 @@ class Proxy(object):
     _scaler: Scaler
 
     def __init__(self, args):
+        _logger.debug("START")
 
         if "local_address" in args:
             self.local_address = args.local_address
@@ -34,13 +35,15 @@ class Proxy(object):
         # super(ClassName, self).__init__(*args))
 
     def set_scaler(self, _scaler: Scaler):
+        _logger.debug("START")
         self._scaler = _scaler
 
     def run(self):
-        _logger.debug("START RUN")
+        _logger.debug("START")
         return self.tcp_server()
 
     def tcp_server(self):
+        _logger.debug("START")
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             sock.setblocking(0)
@@ -84,14 +87,14 @@ class Proxy(object):
         except:
             _logger.error('Failed to listen on {}:{}'.format(
                 self.local_address, self.local_port))
-            # sys.exit(0)
-            return 1
+            sys.exit(0)
+            # return 1
         finally:
-            # sys.exit(0)
-            return 1
+            sys.exit(0)
+            # return 1
 
     def remote_conn(self):
-        _logger.debug("remote_conn")
+        _logger.debug("START")
         try:
             remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             remote_sock.connect((self.remote_address, int(self.remote_port)))
@@ -101,6 +104,7 @@ class Proxy(object):
             return False
 
     def store_sock(self, client, addr, rserver):
+        _logger.debug("START")
         self.lsock.append(client)
         self.lsock.append(rserver)
 
@@ -111,6 +115,7 @@ class Proxy(object):
             _logger.error(e)
 
     def received_from(self, sock, timeout):
+        _logger.debug("START")
         data = ""
         sock.settimeout(timeout)
         try:
@@ -124,8 +129,7 @@ class Proxy(object):
         return data
 
     def close_sock(self, sock):
-        _logger.info(
-            'End of connection with {}'.format(sock.getpeername()))
+        _logger.debug('End of connection with {}'.format(sock.getpeername()))
         self.lsock.remove(self.msg_queue[sock])
         self.lsock.remove(self.msg_queue[self.msg_queue[sock]])
         serv = self.msg_queue[sock]
@@ -135,15 +139,9 @@ class Proxy(object):
         del self.msg_queue[serv]
 
     def hit_request(self, data='', length=16):
-        _logger.info(f"HIT REQUEST")
+        _logger.debug("START")
         try:
             self._scaler.update_last_call()
             self._scaler.make_target_available()
         except Exception as e:
             _logger.error(e)
-
-        # get object scaler
-        # check endpoint/replica is available
-        # if not update replica to 1
-        # update anonation with time
-        pass

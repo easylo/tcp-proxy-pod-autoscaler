@@ -1,6 +1,9 @@
+import inspect
+
+
 class LoggerToolbox(object):
 
-    _level = 3
+    _level = 0
     level_ERROR = 0
     level_INFO = 1
     level_WARNING = 2
@@ -38,7 +41,11 @@ class LoggerToolbox(object):
         self._log(_message, self.level_WARNING)
 
     def debug(self, _message):
-        self._log(_message, self.level_DEBUG)
+        _inspect_obj = inspect.stack()[1]
+        _parent_function = _inspect_obj.function
+        _parent_filename = _inspect_obj.filename
+        self._log(
+            f"[{_parent_filename}::{_parent_function}] {_message}", self.level_DEBUG)
 
 
 _logger = LoggerToolbox()
