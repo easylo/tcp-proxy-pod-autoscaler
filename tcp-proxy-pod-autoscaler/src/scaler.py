@@ -15,7 +15,8 @@ class Scaler(object):
     _endpoint_name = ""
     _check_ttl: int
     _replicas = None
-    timeout_ms = 500
+    _max_retry = 10
+    _timeout_ms = 500
     _factor = 1.5  # timeout series: 0.5s, 0.8s, 1.1s, 1.7s, 2.5s, 3.8s, 5.7s, 8.5s, 12.8s, 19.2s, 28.8s
 
     def __init__(self, args):
@@ -32,6 +33,9 @@ class Scaler(object):
 
         if "endpoint" in args:
             self._endpoint_name = args.endpoint
+
+        if "max_retry" in args:
+            self._max_retry = args.max_retry
 
         self._k8s = KubernetesToolbox()
 
@@ -88,14 +92,14 @@ class Scaler(object):
             self._k8s.update_replica_number(
                 self._namespace, self._deployment_name, 1)
             # wait endpoint is available
-            for i in range(1, 10):
+            for i in range(1, self._max_retry):
                 _endpoint_status = self._k8s.check_endpoint_available(
                     self._namespace, self._endpoint_name)
                 if _endpoint_status:
                     return True
                 else:
-                    _timer = (self.timeout_ms/1000)
+                    _timer = (self._timeout_ms/1000)
                     _logger.debug(f"wait {_timer}s before next retry")
                     sleep(_timer)
-                    self.timeout_ms = self.timeout_ms * self._factor
+                    self._timeout_ms = self._timeout_ms * self._factor
             return False

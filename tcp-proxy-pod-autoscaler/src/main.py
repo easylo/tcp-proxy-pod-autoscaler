@@ -33,6 +33,8 @@ def parse_args():
                         dest="check_ttl", type=int, default=1800, required=False)
     parser.add_argument("--log-level", help="Set log level(ERROR=0, INFO=1, WARNING=2, DEBUG=3)",
                         type=int, default=2, required=False)
+    parser.add_argument("--max-retry", help="Number of attempts to wait for the endpoint to be available",
+                        type=int, default=10, required=False)
 
     _args = parser.parse_args()
 
