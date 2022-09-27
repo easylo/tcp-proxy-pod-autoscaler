@@ -19,6 +19,8 @@ class LoggerToolbox(object):
         self._level_code = self.get_level_code(_level)
 
     def get_level_code(self, _level):
+        level_code = self.level_code_INFO
+
         match _level:
             case "DEBUG":
                 level_code = self.level_code_DEBUG
@@ -30,6 +32,7 @@ class LoggerToolbox(object):
                 level_code = self.level_code_ERROR
             case "CRITICAL":
                 level_code = self.level_code_CRITICAL
+
         return level_code
 
     def _log(self, _message, _level="INFO"):
