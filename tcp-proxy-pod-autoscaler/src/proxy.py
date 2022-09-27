@@ -78,7 +78,7 @@ class Proxy(object):
                         self.close_sock(s)
                         break
                     else:
-                        _logger.info(
+                        _logger.debug(
                             'Received {} bytes from client '.format(len(data)))
                         # here if we want to update reponse
         except KeyboardInterrupt:

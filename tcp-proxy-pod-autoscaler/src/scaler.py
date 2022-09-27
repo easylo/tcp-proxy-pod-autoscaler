@@ -64,8 +64,8 @@ class Scaler(object):
         _logger.debug("START")
         _last_call_annotation = self._k8s.get_deployment_annotation(
             self._namespace, self._deployment_name, self._last_call_at_annotation)
-        _logger.debug(
-            f"is_expired::_last_call_annotation {_last_call_annotation}")
+        _logger.debug(f"_last_call_annotation {_last_call_annotation}")
+
         if _last_call_annotation is not None:
             _last_call_UTC = datetime.fromisoformat(_last_call_annotation)
 
