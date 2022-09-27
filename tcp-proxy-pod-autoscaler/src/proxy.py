@@ -93,8 +93,8 @@ class Proxy(object):
                 self.local_address, self.local_port))
             sys.exit(0)
             # return 1
-        finally:
-            sys.exit(0)
+        # finally:
+            # sys.exit(0)
             # return 1
 
     def remote_conn(self):
