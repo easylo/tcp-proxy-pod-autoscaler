@@ -24,7 +24,7 @@ class Scaler(object):
 
         if "check_ttl" in args:
             self._check_ttl = args.check_ttl
-        
+
         if "namespace" in args:
             self._namespace = args.namespace
 
@@ -32,17 +32,17 @@ class Scaler(object):
             self._deployment_name = args.deployment
 
         if "endpoint" in args:
-            self._endpoint_name = args.endpoint            
+            self._endpoint_name = args.endpoint
 
         if "max_retry" in args:
             self._max_retry = args.max_retry
-            
+
         _logger.info(f"Watching namespace: {self._namespace}")
         _logger.info(f"Watching deployment: {self._deployment_name}")
         _logger.info(f"Watching endpoint: {self._endpoint_name}")
-        _logger.info(f"TTL: {self.check_ttl}")        
+        _logger.info(f"TTL: {self._check_ttl}")
         _logger.info(f"Max retry: {self._max_retry}")
-        
+
         self._k8s = KubernetesToolbox()
 
     def scale_down(self, _replica=0):
