@@ -24,7 +24,7 @@ class Scaler(object):
 
         if "check_ttl" in args:
             self._check_ttl = args.check_ttl
-
+        
         if "namespace" in args:
             self._namespace = args.namespace
 
@@ -32,11 +32,17 @@ class Scaler(object):
             self._deployment_name = args.deployment
 
         if "endpoint" in args:
-            self._endpoint_name = args.endpoint
+            self._endpoint_name = args.endpoint            
 
         if "max_retry" in args:
             self._max_retry = args.max_retry
-
+            
+        _logger.info(f"Watching namespace: {self._namespace}")
+        _logger.info(f"Watching deployment: {self._deployment_name}")
+        _logger.info(f"Watching endpoint: {self._endpoint_name}")
+        _logger.info(f"TTL: {self.check_ttl}")        
+        _logger.info(f"Max retry: {self._max_retry}")
+        
         self._k8s = KubernetesToolbox()
 
     def scale_down(self, _replica=0):
@@ -92,14 +98,15 @@ class Scaler(object):
             self._k8s.update_replica_number(
                 self._namespace, self._deployment_name, 1)
             # wait endpoint is available
+            __timeout_ms = self._timeout_ms
             for i in range(1, self._max_retry):
                 _endpoint_status = self._k8s.check_endpoint_available(
                     self._namespace, self._endpoint_name)
                 if _endpoint_status:
                     return True
                 else:
-                    _timer = (self._timeout_ms/1000)
+                    _timer = (__timeout_ms/1000)
                     _logger.debug(f"wait {_timer}s before next retry")
                     sleep(_timer)
-                    self._timeout_ms = self._timeout_ms * self._factor
+                    __timeout_ms = __timeout_ms * self._factor
             return False

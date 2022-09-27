@@ -31,6 +31,11 @@ class Proxy(object):
         if "remote_port" in args:
             self.remote_port = args.remote_port
 
+        _logger.info(f"Proxy local_address: {self.local_address}")
+        _logger.info(f"Proxy local_port: {self.local_port}")
+        _logger.info(f"Proxy remote_address: {self.remote_address}")
+        _logger.info(f"Proxy remote_port: {self.remote_port}")
+
         # super(ClassName, self).__init__(*args))
 
     def set_scaler(self, _scaler: Scaler):
@@ -51,7 +56,7 @@ class Proxy(object):
             self.lsock.append(sock)
 
             _logger.info(
-                f'[*] Listening on {self.local_address} {self.local_port}')
+                f'Listening on {self.local_address}:{self.local_port}')
 
             while True:
                 readable, writable, exceptional = select.select(
@@ -62,12 +67,12 @@ class Proxy(object):
                         rserver = self.remote_conn()
                         if rserver:
                             client, addr = sock.accept()
-                            _logger.info('Accepted connection {0} {1}'.format(
+                            _logger.info('Accepted connection from {0}:{1}'.format(
                                 addr[0], addr[1]))
                             self.store_sock(client, addr, rserver)
                             break
                         else:
-                            _logger.info('the connection with the remote server can\'t be \
+                            _logger.error('the connection with the remote server can\'t be \
                             established')
                             _logger.info(
                                 'Connection with {} is closed'.format(addr[0]))

@@ -27,7 +27,7 @@ spec:
         - --target-port=80
         - --ttl=300
         - --check-interval=30
-        - --log-level=0
+        - --log-level=DEBUG
         resources:
           requests:
             cpu: 100m

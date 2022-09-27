@@ -90,7 +90,8 @@ class KubernetesToolbox(object):
 
     def update_replica_number(self, _namespace, _deployment_name, _replicas):
         _logger.debug("START")
-        _logger.info(f"update_replica_number: {_replicas}")
+        _logger.info(f"Updating replica number to {_replicas} due to traffic activity/inactivity")
+
         with client.ApiClient(self._configuration) as api_client:
             api_instance = client.AppsV1Api(api_client)
 
@@ -119,41 +120,41 @@ class KubernetesToolbox(object):
 
     # Others
 
-    def watch_events(self):
-        _logger.debug("START")
-        # Configs can be set in Configuration class directly or using helper utility
-        # config.load_kube_config()
+    # def watch_events(self):
+    #     _logger.debug("START")
+    #     # Configs can be set in Configuration class directly or using helper utility
+    #     # config.load_kube_config()
 
-        corev1 = client.CoreV1Api()
-        networkv1 = client.NetworkingV1Api()
-        count = 10
-        w = watch.Watch()
-        for event in w.stream(corev1.list_namespace, timeout_seconds=10):
-            print("Event: %s %s" %
-                  (event['type'], event['object'].metadata.name))
-            count -= 1
-            if not count:
-                w.stop()
-        print("Finished namespace stream.")
+    #     corev1 = client.CoreV1Api()
+    #     networkv1 = client.NetworkingV1Api()
+    #     count = 10
+    #     w = watch.Watch()
+    #     for event in w.stream(corev1.list_namespace, timeout_seconds=10):
+    #         print("Event: %s %s" %
+    #               (event['type'], event['object'].metadata.name))
+    #         count -= 1
+    #         if not count:
+    #             w.stop()
+    #     print("Finished namespace stream.")
 
-        for event in w.stream(corev1.list_pod_for_all_namespaces, timeout_seconds=10):
-            print("Event: %s %s %s" % (
-                event['type'],
-                event['object'].kind,
-                event['object'].metadata.name)
-            )
-            count -= 1
-            if not count:
-                w.stop()
-        print("Finished pod stream.")
+    #     for event in w.stream(corev1.list_pod_for_all_namespaces, timeout_seconds=10):
+    #         print("Event: %s %s %s" % (
+    #             event['type'],
+    #             event['object'].kind,
+    #             event['object'].metadata.name)
+    #         )
+    #         count -= 1
+    #         if not count:
+    #             w.stop()
+    #     print("Finished pod stream.")
 
-        for event in w.stream(networkv1.list_ingress_for_all_namespaces, timeout_seconds=10):
-            print("Event: %s %s %s" % (
-                event['type'],
-                event['object'].kind,
-                event['object'].metadata.name)
-            )
-            count -= 1
-            if not count:
-                w.stop()
-        print("Finished ingress stream.")
+    #     for event in w.stream(networkv1.list_ingress_for_all_namespaces, timeout_seconds=10):
+    #         print("Event: %s %s %s" % (
+    #             event['type'],
+    #             event['object'].kind,
+    #             event['object'].metadata.name)
+    #         )
+    #         count -= 1
+    #         if not count:
+    #             w.stop()
+    #     print("Finished ingress stream.")

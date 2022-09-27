@@ -30,9 +30,9 @@ def parse_args():
     parser.add_argument("--check-interval", help="Time between two checks",
                         dest="check_interval", type=int, default=60, required=False)
     parser.add_argument("--ttl", help="Idle duration before scaling to zero (in seconds)",
-                        dest="check_ttl", type=int, default=1800, required=False)
-    parser.add_argument("--log-level", help="Set log level(ERROR=0, INFO=1, WARNING=2, DEBUG=3)",
-                        type=int, default=2, required=False)
+                        dest="check_ttl", type=int, default=1800, type=int, required=False)
+    parser.add_argument("--log-level", help="Set log level(DEBUG, INFO, WARNING, ERROR, CRITICAL)",
+                        default="INFO", required=False)
     parser.add_argument("--max-retry", help="Number of attempts to wait for the endpoint to be available",
                         type=int, default=10, required=False)
 
@@ -59,8 +59,7 @@ def main():
 
     try:
         _scaler = Scaler(_args)
-        _watcher = Watcher(_args.check_interval,
-                           check_scale_down, _args, _scaler)
+        _watcher = Watcher(_args.check_interval, check_scale_down, _args, _scaler)
         _proxy = Proxy(_args)
         _proxy.set_scaler(_scaler)
         _proxy.run()
