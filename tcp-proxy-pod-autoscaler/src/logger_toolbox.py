@@ -39,7 +39,8 @@ class LoggerToolbox(object):
         _level_code = self.get_level_code(_level)
         if _level_code >= self._level_code:
             _now_UTC = datetime.now(timezone.utc)
-            print(f"{_now_UTC.isoformat()} [{_level}]: {_message}")
+            _now_str = _now_UTC.isoformat("T", "seconds")
+            print(f"{_now_str} [{_level}]: {_message}")
 
     def error(self, _message):
         self._log(_message, "ERROR")
