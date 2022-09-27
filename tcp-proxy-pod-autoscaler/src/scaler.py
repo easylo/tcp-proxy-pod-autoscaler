@@ -15,9 +15,9 @@ class Scaler(object):
     _endpoint_name = ""
     _check_ttl: int
     _replicas = None
-    _max_retry = 10
+    _max_retry = 100
     _timeout_ms = 500
-    _factor = 1.5  # timeout series: 0.5s, 0.8s, 1.1s, 1.7s, 2.5s, 3.8s, 5.7s, 8.5s, 12.8s, 19.2s, 28.8s
+    _factor = 1  # timeout series: 0.5s, 1s
 
     def __init__(self, args):
         _logger.debug("START")
