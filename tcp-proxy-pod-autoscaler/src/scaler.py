@@ -15,9 +15,9 @@ class Scaler(object):
     _endpoint_name = ""
     _check_ttl: int
     _replicas = None
-    _max_retry = 100
-    _timeout_ms = 500
-    _factor = 1  # timeout series: 0.5s, 1s
+    _max_retry = 600
+    _timeout_ms = 1000 
+    _factor = 1  # timeout series: 1s, 2s, 3s.... 10m
 
     def __init__(self, args):
         _logger.debug("START")
@@ -34,6 +34,9 @@ class Scaler(object):
         if "endpoint" in args:
             self._endpoint_name = args.endpoint
 
+        if "timeout_ms" in args:
+            self._timeout_ms = args.timeout_ms
+
         if "max_retry" in args:
             self._max_retry = args.max_retry
 
@@ -41,7 +44,8 @@ class Scaler(object):
         _logger.info(f"Watching deployment: {self._deployment_name}")
         _logger.info(f"Watching endpoint: {self._endpoint_name}")
         _logger.info(f"TTL: {self._check_ttl}")
-        _logger.info(f"Max retry: {self._max_retry}")
+        _logger.info(f"Timeout (Time in ms between 2 checks): {self._timeout_ms}")
+        _logger.info(f"Max retries: {self._max_retry}")
 
         self._k8s = KubernetesToolbox()
 
