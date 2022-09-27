@@ -13,7 +13,7 @@ class Scaler(object):
     _namespace = ""
     _deployment_name = ""
     _endpoint_name = ""
-    _check_ttl: int
+    _ttl: 3600
     _replicas = None
     _max_retry = 10
     _timeout_ms = 500
@@ -22,20 +22,29 @@ class Scaler(object):
     def __init__(self, args):
         _logger.debug("START")
 
-        if "check_ttl" in args:
-            self._check_ttl = args.check_ttl
+        if "ttl" in args:
+            self._ttl = args.ttl
+            _logger.info(f"TTL: {args.ttl}")
+        else:
+            _logger.info(f"TTL (Idle time in seconds after shutting down pods) not provided, using default value ({args.ttl})")
 
         if "namespace" in args:
             self._namespace = args.namespace
+            _logger.info(f"Watching namespace: {args.namespace}")
 
         if "deployment" in args:
             self._deployment_name = args.deployment
+            _logger.info(f"Watching deployment: {args.deployment}")
 
         if "endpoint" in args:
             self._endpoint_name = args.endpoint
+            _logger.info(f"Watching endpoint: {args.endpoint}")
 
         if "max_retry" in args:
             self._max_retry = args.max_retry
+            _logger.info(f"Max retry: {args.max_retry}")
+        else:
+            _logger.info(f"Max retry: {args.max_retry} (not provided, using default value)")
 
         self._k8s = KubernetesToolbox()
 
@@ -71,7 +80,7 @@ class Scaler(object):
 
             _now_UTC = datetime.now(timezone.utc)
 
-            if (_last_call_UTC + timedelta(seconds=self._check_ttl)) < _now_UTC:
+            if (_last_call_UTC + timedelta(seconds=self._ttl)) < _now_UTC:
                 return True
 
         return False
