@@ -31,6 +31,11 @@ class Proxy(object):
         if "remote_port" in args:
             self.remote_port = args.remote_port
 
+        _logger.info(f"Proxy local_address: {self.local_address}")
+        _logger.info(f"Proxy local_port: {self.local_port}")
+        _logger.info(f"Proxy remote_address: {self.remote_address}")
+        _logger.info(f"Proxy remote_port: {self.remote_port}")
+
         # super(ClassName, self).__init__(*args))
 
     def set_scaler(self, _scaler: Scaler):

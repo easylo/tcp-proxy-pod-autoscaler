@@ -1,20 +1,18 @@
 import inspect
-import datetime
+from datetime import datetime
 
 
 class LoggerToolbox(object):
 
-    DEBUG_level_code = 10
-    INFO_level_code = 20
-    WARNING_level_code = 30
-    ERROR_level_code = 40
-    CRITICAL_level_code = 50
+    level_code_DEBUG = 10
+    level_code_INFO = 20
+    level_code_WARNING = 30
+    level_code_ERROR = 40
+    level_code_CRITICAL = 50
 
     # Setting default level to INFO
-    _level_code = INFO_level_code
+    _level_code = level_code_INFO
     _level = "INFO"
-
-    datefmt='%Y-%m-%d %H:%M:%S'
 
     def set_level(self, _level):
         self._level = _level
@@ -23,37 +21,38 @@ class LoggerToolbox(object):
     def get_level_code(self, _level):
         match _level:
             case "DEBUG":
-                level_code = self.DEBUG_level_code
+                level_code = self.level_code_DEBUG
             case "INFO":
-                level_code = self.INFO_level_code
+                level_code = self.level_code_INFO
             case "WARNING":
-                level_code = self.WARNING_level_code
+                level_code = self.level_code_WARNING
             case "ERROR":
-                level_code = self.ERROR_level_code
+                level_code = self.level_code_ERROR
             case "CRITICAL":
-                level_code = self.CRITICAL_level_code
+                level_code = self.level_code_CRITICAL
         return level_code
 
-    def _log(self, _message, _level_code):
-        if self._level_code <= _level_code:
-            dateFormated = datetime.datetime.now().strftime(self.datefmt)
-            print(f"{dateFormated} [{self._level}]: {_message}")
+    def _log(self, _message, _level="INFO"):
+        _level_code = self.get_level_code(_level)
+        if _level_code >= self._level_code :
+            _now_UTC = datetime.now(timezone.utc)
+            print(f"{_now_UTC.isoformat()} [{_level}]: {_message}")
 
     def error(self, _message):
-        self._log(_message, self.ERROR_level_code)
+        self._log(_message, "ERROR")
 
     def info(self, _message):
-        self._log(_message, self.INFO_level_code)
+        self._log(_message, "INFO")
 
     def warning(self, _message):
-        self._log(_message, self.WARNING_level_code)
+        self._log(_message, "WARNING")
 
     def debug(self, _message):
         _inspect_obj = inspect.stack()[1]
         _parent_function = _inspect_obj.function
         _parent_filename = _inspect_obj.filename
         self._log(
-            f"[{_parent_filename}::{_parent_function}] {_message}", self.DEBUG_level_code)
+            f"[{_parent_filename}::{_parent_function}] {_message}", "DEBUG")
 
 
 _logger = LoggerToolbox()
