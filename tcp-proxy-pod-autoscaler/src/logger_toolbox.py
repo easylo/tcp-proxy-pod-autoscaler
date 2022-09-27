@@ -1,5 +1,5 @@
 import inspect
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class LoggerToolbox(object):
@@ -34,7 +34,7 @@ class LoggerToolbox(object):
 
     def _log(self, _message, _level="INFO"):
         _level_code = self.get_level_code(_level)
-        if _level_code >= self._level_code :
+        if _level_code >= self._level_code:
             _now_UTC = datetime.now(timezone.utc)
             print(f"{_now_UTC.isoformat()} [{_level}]: {_message}")
 
