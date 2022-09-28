@@ -1,20 +1,24 @@
 import socket
 # import socks
 import select
+import string
 import sys
 
 from logger_toolbox import _logger
+from toolbox import _toolbox
 from scaler import Scaler
 
 
 class Proxy(object):
-    local_address = ''
-    local_port = 9000
-    remote_address = "-svc"
-    remote_port = 80
-    lsock = []
-    msg_queue = {}
+    local_address: string
+    local_port: int
+    remote_address: string
+    remote_port: int
+    lsock: list = []
+    msg_queue: dict = {}
     _scaler: Scaler
+
+    _stats_request: list = []
 
     def __init__(self, args):
         _logger.debug("START")
@@ -145,6 +149,12 @@ class Proxy(object):
     def hit_request(self, data='', length=16):
         _logger.debug("START")
         try:
+            self._stats_request.append(
+                {
+                    '': '',
+                    'when': _toolbox.get_date_now_utc()
+                }
+            )
             self._scaler.update_last_call()
             self._scaler.make_target_available()
         except Exception as e:

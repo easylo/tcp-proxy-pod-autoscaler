@@ -34,9 +34,9 @@ def parse_args():
     parser.add_argument("--log-level", help="Set log level(DEBUG, INFO, WARNING, ERROR, CRITICAL)",
                         default="INFO", required=False)
     parser.add_argument("--max-retry", help="Number of attempts to wait for the endpoint to be available",
-                        dest="max_retry", type=int, default=600, required=False)
-    parser.add_argument("--timeout-ms", help="Timeout in ms before 2 retries if endpoint is not yet available",
-                        dest="timeout_ms", type=int, default=1000, required=False)
+                        dest="max_retry", type=int, default=30, required=False)
+    parser.add_argument("--waiting-time", help="Waiting time in ms before 2 retries if endpoint is not yet available",
+                        dest="waiting_time", type=int, default=1000, required=False)
 
     _args = parser.parse_args()
 
