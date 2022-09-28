@@ -79,18 +79,21 @@ class KubernetesToolbox(object):
         with client.ApiClient(self._configuration) as api_client:
             api_instance = client.AppsV1Api(api_client)
 
-            _deployment = self.get_deployment(_namespace, _deployment_name)
-            _deployment.metadata.annotations[_annotation] = _annotation_value
+            # _deployment = self.get_deployment(_namespace, _deployment_name)
+            # _deployment.metadata.annotations[_annotation] = _annotation_value
+            _body = {"metadata": {"annotations": {
+                f"{_annotation}": _annotation_value}}}
 
             try:
                 api_response = api_instance.patch_namespaced_deployment(
-                    name=_deployment_name, namespace=_namespace, body=_deployment)
+                    name=_deployment_name, namespace=_namespace, body=_body, async_req=False)
             except ApiException as e:
                 _logger.error(e)
 
     def update_replica_number(self, _namespace, _deployment_name, _replicas):
         _logger.debug("START")
-        _logger.info(f"Updating replica number to {_replicas} due to traffic activity/inactivity")
+        _logger.info(
+            f"Updating replica number to {_replicas} due to traffic activity/inactivity")
 
         with client.ApiClient(self._configuration) as api_client:
             api_instance = client.AppsV1Api(api_client)
