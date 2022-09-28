@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 class Scaler(object):
     _k8s: KubernetesToolbox
     _last_call_at_annotation = 'tcp-proxy-pod-autoscaler/last-call-at'
-    _scale_down_at_annotation = 'tcp-proxy-pod-autoscaler/scale-down-at'
+    _scale_down_at_annotation = 'tcp-proxy-pod-autoscaler/last-scale-down-at'
 
     _namespace = ""
     _deployment_name = ""
