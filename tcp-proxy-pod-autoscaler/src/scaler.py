@@ -14,7 +14,7 @@ class Scaler(object):
     _namespace = ""
     _deployment_name = ""
     _endpoint_name = ""
-    _check_ttl: int
+    _expiration_time: int = 1800
     _replicas = None
     _max_retry: int = 30
     _waiting_time: int = 1000
@@ -23,8 +23,8 @@ class Scaler(object):
     def __init__(self, args):
         _logger.debug("START")
 
-        if "check_ttl" in args:
-            self._check_ttl = args.check_ttl
+        if "expiration_time" in args:
+            self._expiration_time = args.expiration_time
 
         if "namespace" in args:
             self._namespace = args.namespace
@@ -44,9 +44,10 @@ class Scaler(object):
         _logger.info(f"Watching namespace: {self._namespace}")
         _logger.info(f"Watching deployment: {self._deployment_name}")
         _logger.info(f"Watching endpoint: {self._endpoint_name}")
-        _logger.info(f"TTL: {self._check_ttl}")
         _logger.info(
-            f"Waiting time (Time in ms between 2 checks): {self._waiting_time}")
+            f"Traffic expiration time: {self._expiration_time} (in seconds)")
+        _logger.info(
+            f"Time between 2 checks): {self._waiting_time} (in ms)")
         _logger.info(f"Max retries: {self._max_retry}")
 
         self._k8s = KubernetesToolbox()
@@ -84,7 +85,7 @@ class Scaler(object):
 
             _now_UTC = _toolbox.get_date_now_utc()
 
-            if (_last_call_UTC + timedelta(seconds=self._check_ttl)) < _now_UTC:
+            if (_last_call_UTC + timedelta(seconds=self._expiration_time)) < _now_UTC:
                 return True
 
         return False

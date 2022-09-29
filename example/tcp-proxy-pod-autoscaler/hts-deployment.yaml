@@ -25,7 +25,7 @@ spec:
         - --endpoint=frontend-svc
         - --target-address=frontend-svc
         - --target-port=80
-        - --ttl=300
+        - --expiration-time=300
         - --check-interval=30
         - --log-level=DEBUG
         resources:

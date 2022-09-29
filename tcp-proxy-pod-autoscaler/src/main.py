@@ -22,6 +22,9 @@ def parse_args():
     parser.add_argument("--local-port", help="Proxy listen port",
                         type=int, default=80, required=False)
 
+    # parser.add_argument("--metrics-port", help="Proxy Metrics listen port",
+    #                     type=int, default=8080, required=False)
+
     parser.add_argument("--target-address", help="target address to which requests should be proxied (typically the Service name)",
                         dest="remote_address", required=True)
     parser.add_argument("--target-port", help="Target listen port",
@@ -29,9 +32,10 @@ def parse_args():
 
     parser.add_argument("--check-interval", help="Time between two checks (for the scaler to trigger scale down)",
                         dest="check_interval", type=int, default=60, required=False)
-    parser.add_argument("--ttl", help="Idle duration before scaling to zero (in seconds)",
-                        dest="check_ttl", type=int, default=1800, required=False)
-    parser.add_argument("--log-level", help="Set log level(DEBUG, INFO, WARNING, ERROR, CRITICAL)",
+    parser.add_argument("--expiration-time", help="Traffic inactivity duration before scaling to zero (in seconds)",
+                        dest="expiration_time", type=int, default=1800, required=False)
+
+    parser.add_argument("--log-level", help="Set log level(DEBUG|INFO|WARNING|ERROR|CRITICAL)",
                         default="INFO", required=False)
     parser.add_argument("--max-retry", help="Number of attempts to wait for the endpoint to be available",
                         dest="max_retry", type=int, default=30, required=False)
@@ -63,6 +67,7 @@ def main():
         _scaler = Scaler(_args)
         _watcher = Watcher(_args.check_interval,
                            check_scale_down, _args, _scaler)
+
         _proxy = Proxy(_args)
         _proxy.set_scaler(_scaler)
         _proxy.run()
