@@ -44,7 +44,6 @@ class KubernetesToolbox(object):
                 return True
 
         return False
-        # return api_response.status.replicas
 
     def get_deployment(self, _namespace, _deployment_name):
         _logger.debug("START")
@@ -55,9 +54,8 @@ class KubernetesToolbox(object):
                 api_response = api_instance.read_namespaced_deployment(
                     name=_deployment_name, namespace=_namespace)
             except ApiException as e:
-                _logger.error(e)
+                _logger.exception(e)
 
-            # _logger.info(f"{api_response=}")
             return api_response
 
     def get_replica_number(self, _namespace, _deployment_name):
@@ -66,21 +64,16 @@ class KubernetesToolbox(object):
             api_instance = client.AppsV1Api(api_client)
             api_response = api_instance.read_namespaced_deployment(
                 name=_deployment_name, namespace=_namespace)
-            # _logger.debug(f"get_replica_number: {api_response =}")
+
             if api_response.status.available_replicas is None:
                 return 0
             return api_response.status.available_replicas
-
-        # return False
-        # return api_response.status.replicas
 
     def update_deployment_annotation(self, _namespace, _deployment_name, _annotation, _annotation_value):
         _logger.debug("START")
         with client.ApiClient(self._configuration) as api_client:
             api_instance = client.AppsV1Api(api_client)
 
-            # _deployment = self.get_deployment(_namespace, _deployment_name)
-            # _deployment.metadata.annotations[_annotation] = _annotation_value
             _body = {"metadata": {"annotations": {
                 f"{_annotation}": _annotation_value}}}
 
@@ -88,7 +81,7 @@ class KubernetesToolbox(object):
                 api_response = api_instance.patch_namespaced_deployment(
                     name=_deployment_name, namespace=_namespace, body=_body, async_req=False)
             except ApiException as e:
-                _logger.error(e)
+                _logger.exception(e)
 
     def update_replica_number(self, _namespace, _deployment_name, _replicas):
         _logger.debug("START")
@@ -103,7 +96,7 @@ class KubernetesToolbox(object):
                 api_response = api_instance.patch_namespaced_deployment(
                     name=_deployment_name, namespace=_namespace, body=_body, async_req=False)
             except ApiException as e:
-                _logger.error(e)
+                _logger.exception(e)
 
     # Endpoints
     def check_endpoint_available(self, _namespace, _endpoint_name):
@@ -112,14 +105,12 @@ class KubernetesToolbox(object):
             api_instance = client.CoreV1Api(api_client)
             api_response = api_instance.read_namespaced_endpoints(
                 name=_endpoint_name, namespace=_namespace)
-            # _logger.debug(f"check_endpoint_available: {api_response =}")
+
             if hasattr(api_response, 'subsets'):
                 if hasattr(api_response.subsets, 'addresses'):
                     if len(api_response.subsets.addresses) > 0:
                         return True
             return False
-
-    #     pass
 
     # Others
 

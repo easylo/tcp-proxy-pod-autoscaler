@@ -4,6 +4,7 @@ import select
 import string
 import sys
 
+
 from logger_toolbox import _logger
 from toolbox import _toolbox
 from scaler import Scaler
@@ -12,6 +13,8 @@ from scaler import Scaler
 class Proxy(object):
     local_address: string
     local_port: int
+    metrics_server: bool = False
+    metrics_port: int
     remote_address: string
     remote_port: int
     lsock: list = []
@@ -29,6 +32,9 @@ class Proxy(object):
         if "local_port" in args:
             self.local_port = args.local_port
 
+        if "metrics_port" in args:
+            self.metrics_port = args.metrics_port
+
         if "remote_address" in args:
             self.remote_address = args.remote_address
 
@@ -37,6 +43,8 @@ class Proxy(object):
 
         _logger.info(f"Proxy local_address: {self.local_address}")
         _logger.info(f"Proxy local_port: {self.local_port}")
+        if self.metrics_server:
+            _logger.info(f"Proxy metrics_port: {self.metrics_port}")
         _logger.info(f"Proxy remote_address: {self.remote_address}")
         _logger.info(f"Proxy remote_port: {self.remote_port}")
 
@@ -48,7 +56,10 @@ class Proxy(object):
 
     def run(self):
         _logger.debug("START")
-        return self.tcp_server()
+        try:
+            return self.tcp_server()
+        except Exception as e:
+            _logger.exception(e)
 
     def tcp_server(self):
         _logger.debug("START")
@@ -67,10 +78,11 @@ class Proxy(object):
                     self.lsock, [], [])
                 for s in readable:
                     if s == sock:
-                        self.hit_request()
+                        self.hit_request()  # very important, else target will not be available to connect
                         rserver = self.remote_conn()
                         if rserver:
                             client, addr = sock.accept()
+                            self.stats_add_request_infos(addr[0])
                             _logger.info('Accepted connection from {0}:{1}'.format(
                                 addr[0], addr[1]))
                             self.store_sock(client, addr, rserver)
@@ -93,7 +105,7 @@ class Proxy(object):
         except KeyboardInterrupt:
             _logger.info('Ending server')
         except:
-            _logger.error('Failed to listen on {}:{}'.format(
+            _logger.exception('Failed to listen on {}:{}'.format(
                 self.local_address, self.local_port))
             sys.exit(0)
             # return 1
@@ -108,7 +120,7 @@ class Proxy(object):
             remote_sock.connect((self.remote_address, int(self.remote_port)))
             return remote_sock
         except Exception as e:
-            _logger.error(e)
+            _logger.exception(e)
             return False
 
     def store_sock(self, client, addr, rserver):
@@ -120,7 +132,7 @@ class Proxy(object):
             self.msg_queue[client] = rserver
             self.msg_queue[rserver] = client
         except Exception as e:
-            _logger.error(e)
+            _logger.exception(e)
 
     def received_from(self, sock, timeout):
         _logger.debug("START")
@@ -146,16 +158,22 @@ class Proxy(object):
         del self.msg_queue[sock]
         del self.msg_queue[serv]
 
-    def hit_request(self, data='', length=16):
+    def get_stats_request(self):
+        return self._stats_request
+
+    def hit_request(self):
         _logger.debug("START")
         try:
-            self._stats_request.append(
-                {
-                    '': '',
-                    'when': _toolbox.get_date_now_utc()
-                }
-            )
             self._scaler.update_last_call()
             self._scaler.make_target_available()
         except Exception as e:
-            _logger.error(e)
+            _logger.exception(e)
+
+    def stats_add_request_infos(self, _from=""):
+        _logger.debug("START")
+        self._stats_request.append(
+            {
+                'from': _from,
+                'when': _toolbox.get_date_now_utc()
+            }
+        )

@@ -42,6 +42,9 @@ class LoggerToolbox(object):
             _now_str = _now_UTC.isoformat("T", "seconds")
             print(f"{_now_str} [{_level}]: {_message}")
 
+    def exception(self, _message):
+        self._log(_message, "CRITICAL")
+
     def error(self, _message):
         self._log(_message, "ERROR")
 
