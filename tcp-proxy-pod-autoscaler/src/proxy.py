@@ -5,7 +5,7 @@ import string
 import sys
 
 
-from logger_toolbox import _logger
+from LoggerToolbox import _logger
 from toolbox import _toolbox
 from scaler import Scaler
 

@@ -1,5 +1,5 @@
 from threading import Timer
-from logger_toolbox import _logger
+from LoggerToolbox import _logger
 
 
 class Watcher(object):

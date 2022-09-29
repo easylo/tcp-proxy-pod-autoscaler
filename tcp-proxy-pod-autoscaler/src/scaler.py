@@ -1,6 +1,6 @@
 
 from time import sleep
-from logger_toolbox import _logger
+from LoggerToolbox import _logger
 from toolbox import _toolbox
 from kubernetes_toolbox import KubernetesToolbox
 from datetime import datetime, timezone, timedelta

@@ -1,6 +1,6 @@
 import argparse
 
-from logger_toolbox import _logger
+from LoggerToolbox import _logger
 from proxy import Proxy
 from watcher import Watcher
 from scaler import Scaler

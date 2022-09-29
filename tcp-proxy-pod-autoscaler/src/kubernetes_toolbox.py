@@ -1,6 +1,6 @@
 from kubernetes import client, config, watch
 from kubernetes.client.rest import ApiException
-from logger_toolbox import _logger
+from LoggerToolbox import _logger
 
 
 class KubernetesToolbox(object):
