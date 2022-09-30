@@ -114,8 +114,9 @@ class KubernetesToolbox(object):
                         if hasattr(subset, 'addresses'):
                             if subset.addresses is not None:
                                 for address in subset.addresses:
-                                    _logger.debug(f"IP address: {address.ip}")
-                                    return True
+                                    if hasattr(address, 'ip'):
+                                        _logger.debug(f"IP address: {address.ip}")
+                                        return True
                             else:
                                 _logger.debug("subset.addresses was set to None")
             else:
