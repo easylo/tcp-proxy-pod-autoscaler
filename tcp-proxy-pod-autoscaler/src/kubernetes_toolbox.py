@@ -107,11 +107,19 @@ class KubernetesToolbox(object):
                 name=_endpoint_name, namespace=_namespace)
 
             if hasattr(api_response, 'subsets'):
-                if hasattr(api_response.subsets, 'addresses'):
-                    if api_response.subsets.addresses is not None:
-                        if isinstance(api_response.subsets.addresses, (dict, list)):
-                            if len(api_response.subsets.addresses) > 0:
-                                return True
+                if api_response.subsets:
+                    _logger.debug(f"found subsets")
+                    for subset in api_response.subsets:
+                        _logger.debug(f"subset: {subset}")
+                        if hasattr(subset, 'addresses'):
+                            if subset.addresses is not None:
+                                for address in subset.addresses:
+                                    _logger.debug(f"IP address: {address.ip}")
+                                    return True
+                            else:
+                                _logger.debug("subset.addresses was set to None")
+            else:
+                 _logger.debug("subsets not found")
             return False
 
     # Others

@@ -3,6 +3,7 @@ import socket
 import select
 import string
 import sys
+import time
 
 
 from LoggerToolbox import _logger
@@ -115,13 +116,19 @@ class Proxy(object):
 
     def remote_conn(self):
         _logger.debug("START")
-        try:
-            remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            remote_sock.connect((self.remote_address, int(self.remote_port)))
-            return remote_sock
-        except Exception as e:
-            _logger.exception(e)
-            return False
+        counter = 0
+        max_attempts = 60
+        while (counter < max_attempts):
+            try:
+                remote_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                remote_sock.connect((self.remote_address, int(self.remote_port)))
+                return remote_sock
+            except Exception as e:
+                counter += 1
+                _logger.debug(f"Sleep 1s due to connect failure ({counter}/{max_attempts}): {e}")
+                time.sleep(1)
+        _logger.exception(f"Max connect attempts reached ({max_attempts}).")
+        return False
 
     def store_sock(self, client, addr, rserver):
         _logger.debug("START")
