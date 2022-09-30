@@ -108,8 +108,10 @@ class KubernetesToolbox(object):
 
             if hasattr(api_response, 'subsets'):
                 if hasattr(api_response.subsets, 'addresses'):
-                    if len(api_response.subsets.addresses) > 0:
-                        return True
+                    if api_response.subsets.addresses is not None:
+                        if isinstance(api_response.subsets.addresses, (dict, list)):
+                            if len(api_response.subsets.addresses) > 0:
+                                return True
             return False
 
     # Others

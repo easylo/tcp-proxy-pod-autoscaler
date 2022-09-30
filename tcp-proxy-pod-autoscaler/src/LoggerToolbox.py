@@ -16,9 +16,25 @@ class LoggerToolbox(object):
 
     def set_level(self, _level):
         self._level = _level
-        self._level_code = self.get_level_code(_level)
+        self._level_code = self.getLevelCode(_level)
 
-    def get_level_code(self, _level):
+    def getLevelName(self, _level):
+        level_name = "ERROR"
+        match _level:
+            case self.level_code_DEBUG:
+                level_name = "DEBUG"
+            case self.level_code_INFO:
+                level_name = "INFO"
+            case self.level_code_WARNING:
+                level_name = "WARNING"
+            case self.level_code_ERROR:
+                level_name = "ERROR"
+            case self.level_code_CRITICAL:
+                level_name = "CRITICAL"
+
+        return level_name
+
+    def getLevelCode(self, _level):
         level_code = self.level_code_INFO
 
         match _level:
@@ -36,7 +52,7 @@ class LoggerToolbox(object):
         return level_code
 
     def _log(self, _message, _level="INFO"):
-        _level_code = self.get_level_code(_level)
+        _level_code = self.getLevelCode(_level)
         if _level_code >= self._level_code:
             _now_UTC = datetime.now(timezone.utc)
             _now_str = _now_UTC.isoformat("T", "seconds")
