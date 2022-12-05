@@ -21,6 +21,8 @@ def parse_args():
                         default='',  required=False)
     parser.add_argument("--local-port", help="Proxy listen port",
                         type=int, default=80, required=False)
+    parser.add_argument("--min-replicas", help="Number of replicas to start",
+                        type=int, default=1, required=False)
 
     # parser.add_argument("--metrics-port", help="Proxy Metrics listen port",
     #                     type=int, default=8080, required=False)
